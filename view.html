@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comment Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #ffeb3b; /* Yellow background */
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border: 3px solid #000; /* Black border */
+    }
+
+    h1 {
+      text-align: center;
+      color: #000; /* Black text */
+    }
+
+    textarea {
+      width: 100%;
+      height: 100px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      resize: none;
+      font-size: 16px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    button {
+      margin-top: 10px;
+      background-color: #4caf50; /* Green button */
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #388e3c; /* Darker green on hover */
+    }
+
+    .comments {
+      margin-top: 20px;
+    }
+
+    .comment {
+      background: #f1f1f1;
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+
+    .comment:nth-child(odd) {
+      background: #e9ecef;
+    }
+
+    .comment .username {
+      font-weight: bold;
+      color: #333;
+    }
+
+    .comment .text {
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Share Your Comment</h1>
+    <input type="text" id="username" placeholder="Enter your name">
+    <textarea id="commentInput" placeholder="Write your comment here..."></textarea>
+    <button onclick="addComment()">Post Comment</button>
+
+    <div class="comments" id="commentsSection">
+      <!-- User comments will appear here -->
+    </div>
+  </div>
+
+  <script>
+    // Load comments from localStorage
+    function loadComments() {
+      const commentsSection = document.getElementById('commentsSection');
+      const savedComments = JSON.parse(localStorage.getItem('comments')) || [];
+
+      savedComments.forEach(({ username, text }) => {
+        const comment = document.createElement('div');
+        comment.className = 'comment';
+
+        const userElement = document.createElement('div');
+        userElement.className = 'username';
+        userElement.textContent = username;
+
+        const textElement = document.createElement('div');
+        textElement.className = 'text';
+        textElement.textContent = text;
+
+        comment.appendChild(userElement);
+        comment.appendChild(textElement);
+
+        commentsSection.appendChild(comment);
+      });
+    }
+
+    function addComment() {
+      const usernameInput = document.getElementById('username');  // Corrected here
+      const commentInput = document.getElementById('commentInput');
+      const commentsSection = document.getElementById('commentsSection');
+
+      // Get the username and comment text
+      const username = usernameInput.value.trim();
+      const commentText = commentInput.value.trim();
+
+      // If both fields are not empty
+      if (username !== '' && commentText !== '') {
+        // Create a new comment element
+        const comment = document.createElement('div');
+        comment.className = 'comment';
+
+        const userElement = document.createElement('div');
+        userElement.className = 'username';
+        userElement.textContent = username;
+
+        const textElement = document.createElement('div');
+        textElement.className = 'text';
+        textElement.textContent = commentText;
+
+        comment.appendChild(userElement);
+        comment.appendChild(textElement);
+
+        // Add the comment to the comments section
+        commentsSection.appendChild(comment);
+
+        // Save the comment to localStorage
+        const savedComments = JSON.parse(localStorage.getItem('comments')) || [];
+        savedComments.push({ username, text: commentText });
+        localStorage.setItem('comments', JSON.stringify(savedComments));
+
+        // Clear the inputs
+        usernameInput.value = '';  // Corrected here
+        commentInput.value = '';
+      } else {
+        alert('Please enter your name and comment before posting.');
+      }
+    }
+
+    // Load comments when the page loads
+    window.onload = loadComments;
+  </script>
+</body>
+</html>

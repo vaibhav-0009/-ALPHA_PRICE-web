@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login and Registration Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fcfc1c;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: #05ebaa;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        .container h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #007BFF;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            background: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+        }
+
+        .toggle {
+            text-align: center;
+            margin-top: 1rem;
+            color: #007BFF;
+            cursor: pointer;
+        }
+
+        .toggle:hover {
+            text-decoration: underline;
+        }
+
+        .message {
+            margin-top: 1rem;
+            text-align: center;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="formTitle">Login</h1>
+        <form id="authForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="email" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="form-group" id="confirmPasswordGroup" style="display: none;">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword">
+            </div>
+            <button type="submit" class="btn" id="submitButton">Login</button>
+        </form>
+        <div class="toggle" id="toggleForm">Don't have an account? Register</div>
+        <div class="message" id="message"></div>
+    </div>
+
+    <script>
+        const authForm = document.getElementById('authForm');
+        const toggleForm = document.getElementById('toggleForm');
+        const formTitle = document.getElementById('formTitle');
+        const submitButton = document.getElementById('submitButton');
+        const confirmPasswordGroup = document.getElementById('confirmPasswordGroup');
+        const message = document.getElementById('message');
+
+        let isLogin = true;
+
+        toggleForm.addEventListener('click', () => {
+            isLogin = !isLogin;
+
+            if (isLogin) {
+                formTitle.textContent = 'Login';
+                submitButton.textContent = 'Login';
+                confirmPasswordGroup.style.display = 'none';
+                toggleForm.textContent = "Don't have an account? Register";
+            } else {
+                formTitle.textContent = 'Register';
+                submitButton.textContent = 'Register';
+                confirmPasswordGroup.style.display = 'block';
+                toggleForm.textContent = "Already have an account? Login";
+            }
+
+            message.textContent = '';
+            authForm.reset();
+        });
+
+        authForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword')?.value;
+
+            if (isLogin) {
+                const storedUser = JSON.parse(localStorage.getItem('user'));
+
+                if (storedUser && storedUser.username === username && storedUser.password === password) {
+                    message.textContent = 'Login successful! Redirecting to the main page...';
+                    message.style.color = 'green';
+                    setTimeout(() => {
+                        window.location.href = 'index.html'; // Redirect to the main page
+                    }, 2000);
+                } else {
+                    message.textContent = 'Invalid username or password!';
+                    message.style.color = 'red';
+                }
+            } else {
+                if (password !== confirmPassword) {
+                    message.textContent = 'Passwords do not match!';
+                    message.style.color = 'red';
+                    return;
+                }
+
+                const userData = {
+                    username: username,
+                    password: password
+                };
+
+                localStorage.setItem('user', JSON.stringify(userData));
+                message.textContent = 'Registration successful! You can now login.';
+                message.style.color = 'green';
+                authForm.reset();
+
+                // Switch to login mode after registration
+                toggleForm.click();
+            }
+        });
+    </script>
+</body>
+</html>

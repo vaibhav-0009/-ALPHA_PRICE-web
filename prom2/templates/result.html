@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Details</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Stock Details</h1>
+        {% if error_message %}
+            <p class="error">{{ error_message }}</p>
+        {% else %}
+            <p><strong>Company Name:</strong> {{ company_name }}</p>
+            <p><strong>Sector:</strong> {{ sector }}</p>
+            <p><strong>Stock Ticker:</strong> {{ stock_name }}</p>
+            <p><strong>Current Price:</strong> ${{ current_price }}</p>
+        {% endif %}
+        <a href="/">Back to Search</a>
+    </div>
+</body>
+</html>
